@@ -1,0 +1,83 @@
+body {
+    font: normal 12pt sans-serif;
+}
+
+h1,
+h2 {
+    font-weight: normal;
+}
+
+label {
+    display: inline-block;
+    width: 8em;
+    line-height: 2em;
+    color: #444;
+    text-align: right;
+}
+
+input[type=text] {
+    margin-left: 1em;
+    padding: 0.25em;
+    border: solid 1px #888;
+    border-radius: 4px;
+    font: inherit;
+    width: 20em;
+}
+
+input[type=text]:focus {
+    outline: none;
+    border: solid 1px #0066cc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+.header {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+    padding: 10px 16px;
+    position: sticky; top: 0;
+    background: #888;
+    color: #f1f1f1;
+}
+
+#save-changes {
+    visibility: hidden;
+    background-color: rgb(0, 160, 0);
+    color: white;
+    border: solid 2px rgb(0, 80, 0);
+    width: 200px;
+    height: 50px;
+}
+#reload {
+    background-color: rgb(72, 92, 2);
+    color: white;
+    border: solid 2px rgb(80, 52, 0);
+    width: 200px;
+    height: 50px;
+}
+
+.group {
+    margin: 1em 2em;
+    padding: 1em;
+    background-color:#DDDDDD;
+    border: thick double #32a1ce;
+    border-radius: 0px;
+    max-width: 1060px;
+}
+
+.group h2 {
+    margin: 0 0 1em 0;
+}
+.column {
+  float: left;
+  width: 33.33%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}

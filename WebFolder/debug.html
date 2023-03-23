@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="jquery-3.6.3.min.js"></script>
+<script src="jquery.terminal-2.35.2.min.js"></script>
+<link rel="stylesheet" href="jquery.terminal.css"/>
+<link rel="stylesheet" href="termstyle.css">
+</head>
+<body>
+
+    <template id="greetings">
+        ____               _                                      
+        / ___|_ __ ___  ___| |_ _ __ ___  _ __                     
+       | |   | '__/ _ \/ __| __| '__/ _ \| '_ \                    
+       | |___| | |  __/\__ \ |_| | | (_) | | | |                   
+        \____|_|  \___||___/\__|_|  \___/|_|_|_|   ___ ____  _____ 
+       |  \/  | __ _ ___| |_ ___ _ __ ___  |___ \ / _ \___ \|___ / 
+       | |\/| |/ _` / __| __/ _ \ '__/ __|   __) | | | |__) | |_ \ 
+       | |  | | (_| \__ \ ||  __/ |  \__ \  / __/| |_| / __/ ___) |
+       |_|  |_|\__,_|___/\__\___|_|  |___/ |_____|\___/_____|____/ 
+                             
+        enter the help command to see a list of supported commands
+
+    </template>
+    <script>
+
+    //  This is a very VERY basic implimentation of the jquery terminal library.
+    //  you can learn more about it at https://terminal.jcubic.pl
+    $(function() {
+        $('body').terminal(function(command, term) {
+            var $url = `../cws/debug/term/junk`;
+            //var $url = `../cws/debug/term/`;
+            return $.post($url, {command: command});
+        }, {
+            greetings: greetings.innerHTML,
+            name: 'Masters 2023 CWS Console',
+            prompt: "DEBUG WEB CONSOLE>",
+            newline: false
+        });
+    });
+    </script>
+
+</body>
+</html>

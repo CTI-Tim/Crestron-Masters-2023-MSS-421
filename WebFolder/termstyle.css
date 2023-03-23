@@ -1,0 +1,19 @@
+.term {
+    margin: 1em 2em;
+    padding: 1em;
+    background-color:#000000;
+    border: thick double #2102ac;
+    border-radius: 12px;
+    max-width: 1060px;
+}
+.header {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 800px;
+    padding: 10px 16px;
+    position: sticky; top: 0;
+    background: #888;
+    color: #f1f1f1;
+}
