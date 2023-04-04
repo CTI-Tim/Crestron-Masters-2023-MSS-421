@@ -1,9 +1,11 @@
 ﻿using Crestron.SimplSharp;
+using Crestron.SimplSharp.Net;
 using Crestron.SimplSharp.WebScripting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace CrestronMasters2023CSharpClass
@@ -14,7 +16,7 @@ namespace CrestronMasters2023CSharpClass
     {
         //Globals
         private string _filename = "";
-        public static Configuration Setting;  //Static?  YES!  This makes sure we have only ONE as a static member means it can exist only once.
+        public static Configuration Setting;  //Static?  YES!  This makes sure we have only ONE as a static member meaning it can exist only once.
 
         private HttpCwsRoute myRoute;
         private HttpCwsServer myServer;
@@ -38,7 +40,9 @@ namespace CrestronMasters2023CSharpClass
             Cws("app", "settings"); // Create the CWS server for the settings
             // /cws/app/settings
         }
-
+        /// <summary>
+        /// Saves the configuration data to storage.
+        /// </summary>
         public void Save()
         {
             try
@@ -59,7 +63,9 @@ namespace CrestronMasters2023CSharpClass
                     CWSDebug.Msg(b2);
             }
         }
-
+        /// <summary>
+        /// Loads the Configuration file from storage.
+        /// </summary>
         public void Load()
         {
             XmlSerializer seralizer = new XmlSerializer(typeof(Configuration));      // Create a serializer that has the structure of our class
@@ -98,15 +104,77 @@ namespace CrestronMasters2023CSharpClass
             }
         }
 
-
+        // Below is bonus information if you need to have a HTTP style API interface
         private void MyServer_ReceivedRequestEvent(object sender, HttpCwsRequestEventArgs args)
         {
             //TODO: Add special URL handling
+
+            // Example to look for specific info in the Get URL sent
+            // This does not care about any routes and allows you to look for anything that was sent
+            // to the root of the Server path specified.    This lets you do simple things quick and dirty
+            // without having to create another Route and Route processing class.  THIS IS NOT RESTFUL
+
+            // Get for requests for information
+            if (args.Context.Request.HttpMethod == "GET")
+            {
+                /*
+                 *  Below we are going to parse the raw URL sent to talk to this server, this is going to
+                 *  look for parameters and extract the data if we find what we are looking for.
+                 *  Note: this only works here. you cannot look for parameters in the separate
+                 *  route handlers as sending a parameter will make them never match and contain
+                 *  the desired data.  If you want to support parameters this is the way.
+                 *  in a web browser go to http://ipaddressofprocessor/cws/api/?command=test
+                 *  if you add a second parameter it would be http://ipaddressofprocessor/cws/api/?command=test&other=test
+                 */
+                var RawUrl = args.Context.Request.RawUrl;  // we want the raw URL as this has the info we are after
+
+                // ParseQueryString can't parse a whole URL, we just want the parameters so split on the ? and grab the last
+                var parameters = HttpUtility.ParseQueryString(RawUrl.Split('?').Last());
+                var command = parameters.Get("command");
+                if (command != null)
+                {
+                    CWSDebug.Msg(string.Format("Command found  and it contains {0}", command));
+
+                    //Sends a response back to the web browser, we can use the args.Context.Response Object to send a full response
+                    //Be aware to do this timely the connection will time out if you take too long to send your response
+                    args.Context.Response.StatusCode = 200;
+                    args.Context.Response.ContentType = "text/plain";
+                    args.Context.Response.Write("Got Command " + command, true);
+                }
+
+                /*
+                 * Or you can do it manually as well
+                // Now we just treat it as a string and look for and extract the data we are after
+                if (RawUrl.Contains("?command="))
+                {
+                    var a = RawUrl.LastIndexOf("?command=");
+                    var b = RawUrl.Length;
+                    CrestronConsole.PrintLine("Command that was sent  = {0}",RawUrl.Substring(a+9, b-a-9));
+                }
+                */
+            }
+            // Posts for updating and changing information
+            else if (args.Context.Request.HttpMethod == "POST")
+            {
+                var RawUrl = args.Context.Request.RawUrl;  // we want the raw URL as this has the info we are after
+
+                // ParseQueryString can't parse a whole URL, we just want the parameters so split on the ? and grab the last
+                var parameters = HttpUtility.ParseQueryString(RawUrl.Split('?').Last());
+                var command = parameters.Get("command");
+                if (command != null)
+                    CWSDebug.Msg(string.Format("Command found  and it contains {0}", command));
+            }
+
+
         }
 
 
-        // ####  Private methods for the class below
 
+        /// <summary>
+        /// Checks the Filename to be valid for appliance or server use and corrects it
+        /// </summary>
+        /// <param name="Filename"></param>
+        /// <returns>string with corrected path</returns>
         private string CheckFilename(string Filename)
         {
             /*
@@ -191,7 +259,7 @@ namespace CrestronMasters2023CSharpClass
                     }
                 case "POST":
                     {
-                        /* NOTE:  we MUST use the Crestron StreamReader here instead of System.IO;StreamReader as what comes out of CWS is
+                        /* NOTE:  we MUST use the Crestron StreamReader here instead of System.IO.StreamReader as what comes out of CWS is
                         *        defined in the CrestronIO namespace.  Be aware of this.
                         *
                         * WARNING!  There is no sanity checking on the json that is sent in from the web page and javascript
@@ -233,7 +301,7 @@ namespace CrestronMasters2023CSharpClass
                             }
 
 
-                            // Class Lab : add in code to allow adding a single entry to the endpoint list
+                            
                             else if (_context.Request.RouteData.Values["REQUEST"].ToString().ToLower() == "add")
                             {
                                 // This means we need to PARSE the JSON being sent and extract the  IP address and endpoint name.
@@ -248,7 +316,7 @@ namespace CrestronMasters2023CSharpClass
                                 }
 
                             }
-                            // Class Lab : add in code to delete a single entry from the endpoint list
+                            
                             else if (_context.Request.RouteData.Values["REQUEST"].ToString().ToLower() == "del")
                             {
                                 // The task at hand should be the same decode the name at least we need to find in the list and
@@ -326,7 +394,7 @@ namespace CrestronMasters2023CSharpClass
     }
 
     /*
-     * Here are some important details about XML serialization in C# that you should be aware of. First of all, every class
+     * Here are some important details about Json serialization in C# that you should be aware of. First of all, every class
      * that we want to serialize should define the default (parameterless) constructor. 
      * In our case, we have not defined any constructors on the NVX class. Therefore, the parameterless constructor is included by default.
      * Also, only the public members of a class will be serialized; private members will be omitted from the XML document.

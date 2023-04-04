@@ -5,6 +5,7 @@ using Crestron.SimplSharp.WebScripting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Independentsoft.Exchange;
 
 namespace CrestronMasters2023CSharpClass
 {
@@ -246,6 +247,7 @@ namespace CrestronMasters2023CSharpClass
             Commands.Add("last", new Func<string, HttpCwsContext, bool>(MsgList));
             Commands.Add("debug", new Func<string, HttpCwsContext, bool>(DbugCommand));
             Commands.Add("info", new Func<string, HttpCwsContext, bool>(ProgInfo));
+            Commands.Add("config", new Func<string, HttpCwsContext, bool>(ListConfig));
             CWSDebug.Msg($"Added {Commands.Count} Commands to the dictionary");
         }
 
@@ -257,11 +259,20 @@ namespace CrestronMasters2023CSharpClass
             context.Response.Write(" last [1-50] = show the last debug messages (Limited to the last 50)\r\n", false);
             context.Response.Write(" debug [on/off] = set debug to on or off, anything else reports current setting\r\n", false);
             context.Response.Write(" info = Program Instance information\r\n", false);
+            context.Response.Write(" config = Display the current config data\r\n", false);
             context.Response.Write(" help = list this help\r\n", false);
 
             return true;
         }
-        // List what messages are currently stored.
+
+        /*
+         *  Below here are the methods that are used for our commands on the simulated text console.
+         *  By leveraging the use of a dictionary and creating delegates stored in the dictionary we can dynamically add or even remove
+         *  commands from the simulated console.   This makes it a lot easier for you to add new commands as you want
+         *  This same process works for nearly anything and can be used for automation.  For example Create a dictionary of lighting loads
+         *  that you want to be a part of the lighting scene you want to control. 
+         */
+
         private static bool MsgList(string command, HttpCwsContext context)
         {
             var num = 0;
@@ -270,7 +281,7 @@ namespace CrestronMasters2023CSharpClass
 
                 num = 0;
 
-            CWSDebug.Msg($" last shows we requested {num}");
+            //CWSDebug.Msg($" last shows we requested {num}");
             if (num < 1)
             {
                 foreach (string s in _messages)
@@ -328,6 +339,23 @@ namespace CrestronMasters2023CSharpClass
             context.Response.Write($"Current IP address = {CrestronEthernetHelper.GetEthernetParameter(CrestronEthernetHelper.ETHERNET_PARAMETER_TO_GET.GET_CURRENT_IP_ADDRESS, 0)} \r\n", false);
 
 
+            return true;
+        }
+
+        private static bool ListConfig(string command, HttpCwsContext context)
+        {
+            context.Response.Write("\r\n\r\n----Current Stored Settings----\r\n",false);
+            context.Response.Write("-------------------------------\r\n", false);
+            context.Response.Write($"Name = {Config.Setting.MastersClass}\r\n",false);
+            context.Response.Write($"Address = {Config.Setting.IPAddress}\r\n", false);
+            context.Response.Write($"Port = {Config.Setting.Port}\r\n", false);
+            context.Response.Write($"Password = {Config.Setting.UiPassword}\r\n", false);
+            context.Response.Write("-------------------------------\r\n", false);
+            foreach (NVX end in Config.Setting.Endpoints)
+            {
+                context.Response.Write($" {end.Name} : {end.Address}\r\n", false);
+            }
+            context.Response.Write("-------------------------------\r\n\r\n", true);
             return true;
         }
 
