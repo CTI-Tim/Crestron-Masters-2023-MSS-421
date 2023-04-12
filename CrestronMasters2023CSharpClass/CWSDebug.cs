@@ -14,6 +14,11 @@ namespace CrestronMasters2023CSharpClass
      * Static classes have their place when used correctly. For example, a debug class that will be used everywhere in the program
      * is a great example of a good use of a static class. Technically the Config class should be static as well if you needed to access
      * the configuration information in all your other classes in your program.  Keep this in mind as you design your programs.
+     * They are perfect for implementing utilities. Applications that don’t need any modifications or utility classes could use static classes.
+     * For example, in-built classes such as Math and System.Convert are some of the commonly used static classes. 
+     *
+     * Static classes consume fewer resources. They do not require instantiation, hence, duplicate objects don’t take up additional memory space. 
+     * Theoretically, static classes offer better performance than their non-static counterparts. This is usually unnoticeable in practical applications.
      */
 
     static class CWSDebug
@@ -241,7 +246,15 @@ namespace CrestronMasters2023CSharpClass
         // ##################################################################################################
         private static void AddCommands()
         {
-            //We load up our dictionary with the command names and create a delegate to each one of our methods below.
+            /*
+             * We load up our dictionary with the command names and create a delegate to each one of our methods below.
+             * Using Func here instead of Action just in case we might want to return a success message
+             * If you did not want to return something you can use Action instead and not declare an
+             * output data type.
+             *
+             * Both Func and Action accept multiple Input's
+             */
+
             Commands.Add("help", new Func<string, HttpCwsContext, bool>(TermHelp));
             Commands.Add("%3f", new Func<string, HttpCwsContext, bool>(TermHelp)); // %3f is what is sent from http for a ?
             Commands.Add("last", new Func<string, HttpCwsContext, bool>(MsgList));
