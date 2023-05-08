@@ -1,0 +1,5 @@
+<Device Model="4-Series Ethernet Control System" Name="Ethernet-Only 4-series">
+   <Network Type="Ethernet" Id="01">
+      <Device Model="Core3 UI XPanel" DeviceId="03" Name="XPanel 2.0 Smart Graphics"/>
+   </Network>
+</Device>

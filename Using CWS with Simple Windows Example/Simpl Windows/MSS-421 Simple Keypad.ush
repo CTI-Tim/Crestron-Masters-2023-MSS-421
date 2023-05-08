@@ -1,0 +1,93 @@
+[BEGIN]
+  Version=1
+[END]
+[BEGIN]
+  ObjTp=FSgntr
+  Sgntr=UserSPlus
+  RelVrs=1
+  IntStrVrs=1
+  SPlusVrs=4.06.00
+  CrossCplrVrs=1.3
+[END]
+[BEGIN]
+  ObjTp=Hd
+  Cmn1=Crestron Masters 2023 - MSS-421 - Simple Keypad Example.\\\\A minimal||1
+  Cmn2=implementation of the CWS class to provide an api\\for pulsing DIGITAL_OUTPUTs||1
+  Cmn3=via HTTP(S) requests.\\\\The user can trigger the digital output||1
+  Cmn4=Button[x] by using the following URLs\\\\For VC-4 / VC-4-PC3:\\https:
+  Cmn5=//[hostname]/VirtualControl/Rooms/[Room ID]/cws/[path]/button/[x]\\
+  Cmn6=\\For all other processors:\\https://[hostname]/cws/[path]/button/[x]\\
+  Cmn7=\\Example:\\curl https://192.168.1.10/cws/keypad/button/5\\Will||1
+  Cmn8=pulse the digital_output Button[5]
+[END]
+[BEGIN]
+  ObjTp=Symbol
+  Exclusions=1,19,20,21,88,89,167,168,179,213,214,215,216,217,225,226,248,249,266,267,310,362,378,380,405,407,408,409,478,522,537,554,586,590,611,624,718,756,767,830,841,842,854,883,955,1032,1062,1079,1128,1129,1134,1140,1157,1158,1195,1199,1220,1221,1222,1223,1299,1348,1349,1439,1472,1473,1499,1746,1766,1803,1975,2229,2354,2514,2523,2532,2567,2574,2590,2651,2655,2706,2707,2817,2886,2938,2947,3181,3197,3233,3235,3236,3427,3454,3567,3568,3601,3602,3680,3682,3706,3708,3710,3735,3736,3816,3888,3902,3903,3912,3918,3925,3926,4176,4193,4206,4207,4308,4476,4591,4769,5360,5388,5420,5455,5497,5699,5813,5919,6150,6161,
+  Exclusions_CDS=5,6
+  Inclusions_CDS=7
+  Name=MSS-421 Simple Keypad Example
+  SmplCName=MSS-421 Simple Keypad.usp
+  Code=1
+  SysRev5=4.000
+  SMWRev=2.02.00
+  OutputCue1=[~UNUSED~]
+  OutputSigType1=Digital
+  OutputCue2=Button[#]
+  OutputSigType2=Digital
+  ParamCue1=[Reference Name]
+  ParamCue2=Path
+  ParamSigType2=String
+  MinVariableInputs=0
+  MaxVariableInputs=0
+  MinVariableInputsList2=0
+  MaxVariableInputsList2=0
+  MinVariableOutputs=2
+  MaxVariableOutputs=101
+  MinVariableOutputsList2=0
+  MaxVariableOutputsList2=0
+  MinVariableParams=1
+  MaxVariableParams=1
+  Expand=expand_separately
+  Expand2=expand_separately
+  ProgramTree=Logic
+  SymbolTree=4
+  Hint=Requires SimplWindowsCWSKeypad.clz
+  PdfHelp=
+  HelpID= 
+  Render=4
+  Smpl-C=16
+  CompilerCode=-48
+  CompilerParamCode=27
+  CompilerParamCode5=14
+  NumFixedParams=1
+  Pp1=1
+  Pp2=2
+  MPp=2
+  NVStorage=10
+  ParamSigType1=String
+  SmplCInputCue1=o#
+  SmplCOutputCue1=i#
+  SmplCInputList2Cue1=an#
+  SmplCOutputList2Cue1=ai#
+  SPlus2CompiledName=S2_MSS_421_Simple_Keypad
+  SymJam=NonExclusive
+  FileName=MSS-421 Simple Keypad.ush
+  SIMPLPlusModuleEncoding=0
+  clz1=SimplWindowsCwsKeypad
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=1
+  Tp=1
+  NoS=False
+[END]
+[BEGIN]
+  ObjTp=Dp
+  H=2
+  Tp=1
+  SD=The unique base path to register with the CWS Server
+  HD=True
+  DV=/keypad/
+  NoS=False
+  VVS=0
+[END]

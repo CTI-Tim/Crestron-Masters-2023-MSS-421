@@ -1,0 +1,362 @@
+/*******************************************************************************************
+  SIMPL+ Module Information
+  (Fill in comments below)
+*******************************************************************************************/
+/*
+Dealer Name: Pure AV, a RICOH Company
+System Name: Crestron Web Services Room Automation Example
+System Number: Initial Release
+Programmer: CDH
+Comments:
+*/
+
+/*******************************************************************************************
+  Compiler Directives
+  (Uncomment and declare compiler directives as needed)
+*******************************************************************************************/
+
+ #SYMBOL_NAME "CWS Room Automation"
+ #HINT "To be used with the appropriate Simpl module wrapper"
+
+ // Pulse time of 1/2 second
+ #DEFINE_CONSTANT PulseTime 50
+
+ #DEFINE_CONSTANT MaxLength 255
+ 
+ // Event ids 
+ #DEFINE_CONSTANT EventIdOff 0
+ #DEFINE_CONSTANT EventIdOn 1
+ #DEFINE_CONSTANT EventIdToggle 2
+ #DEFINE_CONSTANT EventIdRaise 3
+ #DEFINE_CONSTANT EventIdLower 4
+ #DEFINE_CONSTANT EventIdOpen 0
+ #DEFINE_CONSTANT EventIdClose 1
+ #DEFINE_CONSTANT EventIdStop 2
+              
+ // Hidden
+ #CATEGORY "0"
+ #DEFAULT_VOLATILE
+ #ENABLE_STACK_CHECKING
+ #ENABLE_TRACE
+ #ENCODING_ASCII
+/*
+#HELP_BEGIN
+   (add additional lines of help lines)
+#HELP_END
+*/
+
+/*******************************************************************************************
+  Include Libraries
+  (Uncomment and include additional libraries as needed)
+*******************************************************************************************/
+
+// Add a reference to the example web service Simpl# library.
+#USER_SIMPLSHARP_LIBRARY "SimplWindowsCWSIntegration"
+
+/*******************************************************************************************
+  DIGITAL, ANALOG and SERIAL INPUTS and OUTPUTS
+  (Uncomment and declare inputs and outputs as needed)
+*******************************************************************************************/
+
+ // Start / stop (register / unregister) the CWS server instance.
+ DIGITAL_INPUT StartServer,StopServer,_skip_;                                 
+
+ // The power state of the system.
+ DIGITAL_INPUT Power,_skip_,_skip_,_skip_,_skip_,_skip_;
+
+ // The video mute state of the system.
+ DIGITAL_INPUT VideoMute,_skip_,_skip_,_skip_;
+
+ // The audio mute state of the system.
+ DIGITAL_INPUT AudioMute,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_;
+ // Lighting feedback     
+ DIGITAL_INPUT Lights,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_;
+ // Shade feedback (on for closed)
+ DIGITAL_INPUT Shades,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_;
+
+ // The system volume level.
+ ANALOG_INPUT VolumeLevelFb,_skip_;
+ // The current lighting level & scene number.
+ ANALOG_INPUT LightingLevelFb,LightingSceneFb,_skip_;
+ // The current source name.
+ STRING_INPUT SourceFb[MaxLength],_skip_;
+ // 
+ STRING_INPUT Status[MaxLength],_skip_;
+  
+ STRING_INPUT Log[MaxLength];
+
+ // Digital output to provide server running feedback. 
+ DIGITAL_OUTPUT ServerRunning,_skip_,_skip_;
+ // System power on / off / toggle.
+ DIGITAL_OUTPUT PowerOn,PowerOff,PowerToggle,_skip_;
+ // Reset the system to default.
+ DIGITAL_OUTPUT Reset,_skip_;
+
+ // Video mute on / off / toggle.
+ DIGITAL_OUTPUT VideoMuteOn,VideoMuteOff,VideoMuteToggle,_skip_;
+ // Audio mute on / off / toggle.
+ DIGITAL_OUTPUT AudioMuteOn,AudioMuteOff,AudioMuteToggle,_skip_;
+ // Raise / lower the volume by a step.  
+ DIGITAL_OUTPUT VolumeUp,VolumeDown,_skip_;
+
+ // Lighting on / off / toggle.
+ DIGITAL_OUTPUT LightsOn,LightsOff,LightsToggle,_skip_;
+ // Raise / lower the lighting by a step.
+ DIGITAL_OUTPUT LightsRaise,LightsLower,_skip_;
+ // Open / close / stop the shades.
+ DIGITAL_OUTPUT ShadesOpen,ShadesClose,ShadesStop,_skip_;
+ // Raise / lower the shades by a step.
+ DIGITAL_OUTPUT ShadesRaise,ShadesLower,_skip_;
+
+ // Set the system volume to a specific level. 
+ ANALOG_OUTPUT VolumeLevel,_skip_;
+                      
+ // Set the lights to a specific lighting level or scene number.
+ ANALOG_OUTPUT LightingLevel,LightingScene,_skip_;
+    
+ // Set the source to a specifc source name;
+ STRING_OUTPUT Source,_skip_;
+
+ // Direct commands from the CWS server (passthru). 
+ STRING_OUTPUT Command;            
+
+/*******************************************************************************************
+  Simpl# Classes
+*******************************************************************************************/
+
+// Declare a new instance of the CwsRoomAutomation class.
+ CwsRoomAutomation AutomationWebService;
+
+/*******************************************************************************************
+  Parameters
+*******************************************************************************************/
+
+ STRING_PARAMETER _skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,
+	_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,
+	_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,
+	_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,
+	_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,_skip_,
+	_skip_,Path[MaxLength];
+
+/*******************************************************************************************
+  Parameter Properties
+  (Uncomment and declare parameter properties as needed)
+*******************************************************************************************/
+
+#BEGIN_PARAMETER_PROPERTIES Path
+    propValidUnits = unitString;
+    propDefaultUnit = unitString;
+    propDefaultValue = "/api/";
+    propShortDescription = "The path to register with the CWS Server";
+   // #BEGIN_PROP_FULL_DESCRIPTION  line_1...  line_2...  line_n  #END_PROP_FULL_DESCRIPTION
+   // #BEGIN_PROP_NOTES line_1...  line_2...  line_n  #END_PROP_NOTES
+#END_PARAMETER_PROPERTIES
+
+/*******************************************************************************************
+  Simpl + Event Handlers
+*******************************************************************************************/
+
+PUSH StartServer{
+	AutomationWebService.Start(Path);
+	ServerRunning = 1;
+}
+
+PUSH StopServer{
+	AutomationWebService.Stop();
+	ServerRunning = 0;
+}
+
+CHANGE Power{
+ 	AutomationWebService.SetPower(Power);
+}
+ 
+CHANGE VideoMute{
+ 	AutomationWebService.SetVideoMute(VideoMute);
+}
+
+CHANGE AudioMute{
+ 	AutomationWebService.SetAudioMute(AudioMute);
+}
+
+CHANGE Lights{
+ 	AutomationWebService.SetLights(Lights);
+}
+
+CHANGE Shades{
+ 	AutomationWebService.SetShades(Shades);
+}
+
+CHANGE VolumeLevelFb{
+ 	AutomationWebService.SetVolume(VolumeLevelFb);
+}
+ 
+CHANGE LightingLevelFb{
+ 	AutomationWebService.SetLightingLevel(LightingLevelFb);
+}
+ 
+CHANGE LightingSceneFb{
+ 	AutomationWebService.SetLightingScene(LightingSceneFb);
+}
+
+THREADSAFE CHANGE SourceFb{
+ 	AutomationWebService.SetSource(SourceFb);
+}
+ 
+THREADSAFE CHANGE Status{
+ 	AutomationWebService.SetStatus(Status);
+}
+
+THREADSAFE CHANGE Log{
+ 	AutomationWebService.LogError(Log);
+}
+ 
+
+/*******************************************************************************************
+  Simpl# Event Handlers & Callbacks
+*******************************************************************************************/
+
+eventhandler OnPowerRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	switch(args.Value)
+	{
+    	case (EventIdOff):
+			Pulse(PulseTime, PowerOff);
+    	case (EventIdOn):
+			Pulse(PulseTime, PowerOn);
+    	case (EventIdToggle):
+			Pulse(PulseTime, PowerToggle);
+	}
+}
+  
+eventhandler OnSystemResetRequest(CwsRoomAutomation sender, EventArgs args){
+	Pulse(PulseTime, Reset);
+} 
+
+eventhandler OnVideoMuteRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	switch(args.Value)
+	{
+    	case (EventIdOff):
+			Pulse(PulseTime, VideoMuteOff);
+    	case (EventIdOn):
+			Pulse(PulseTime, VideoMuteOn);
+    	case (EventIdToggle):
+			Pulse(PulseTime, VideoMuteToggle);
+	}
+}
+ 
+eventhandler OnAudioMuteRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	switch(args.Value)
+	{
+    	case (EventIdOff):
+			Pulse(PulseTime, AudioMuteOff);
+    	case (EventIdOn):
+			Pulse(PulseTime, AudioMuteOn);
+    	case (EventIdToggle):
+			Pulse(PulseTime, AudioMuteToggle);
+	}
+}
+
+eventhandler OnVolumeRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	switch(args.Value)
+	{
+    	case (EventIdRaise):
+			Pulse(PulseTime, VolumeUp);
+    	case (EventIdLower):
+			Pulse(PulseTime, VolumeDown);
+	}
+} 
+    
+eventhandler OnVolumeLevelRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	VolumeLevel = args.Value;
+} 
+  
+eventhandler OnLightsRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	switch(args.Value)
+	{
+    case (EventIdOff):
+		Pulse(PulseTime, LightsOff);
+    case (EventIdOn):
+		Pulse(PulseTime, LightsOn);
+    case (EventIdToggle):
+		Pulse(PulseTime, LightsToggle);
+    case (EventIdRaise):
+		Pulse(PulseTime, LightsRaise);
+    case (EventIdLower):
+		Pulse(PulseTime, LightsLower);
+	}
+}
+
+eventhandler OnLightingSceneRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	LightingScene = args.Value;
+} 
+
+eventhandler OnLightingLevelRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	LightingLevel = args.Value;
+} 
+    
+
+eventhandler OnShadesRequest(CwsRoomAutomation sender, SimplPlusUshortEventArgs args){
+	switch(args.Value)
+	{
+    case (EventIdOpen):
+		Pulse(PulseTime, ShadesOpen);
+    case (EventIdClose):
+		Pulse(PulseTime, ShadesClose);
+    case (EventIdStop):
+		Pulse(PulseTime, ShadesStop);
+    case (EventIdRaise):
+		Pulse(PulseTime, ShadesRaise);
+    case (EventIdLower):
+		Pulse(PulseTime, ShadesLower);
+	}
+} 
+ 
+eventhandler OnSourceRequest(CwsRoomAutomation sender, SimplPlusStringEventArgs args){
+	MakeString(Source,"%s",args.Value);
+} 
+ 
+eventhandler OnCustomCommandRequest(CwsRoomAutomation sender, SimplPlusStringEventArgs args){
+	MakeString(Command,"%s",args.Value);
+} 
+
+/*******************************************************************************************
+  Main()
+*******************************************************************************************/
+
+Function Main()
+{
+	// Register the power event handlers.
+	RegisterEvent(AutomationWebService,PowerRequest,OnPowerRequest);
+
+  	// Register the system reset handler.                                
+	RegisterEvent(AutomationWebService,SystemResetRequest,OnSystemResetRequest);
+
+    // Register the video mute event handlers.
+	RegisterEvent(AutomationWebService,VideoMuteRequest,OnVideoMuteRequest);
+
+    // Register the audio mute event handlers.
+	RegisterEvent(AutomationWebService,AudioMuteRequest,OnAudioMuteRequest);
+
+    // Register the volume event handlers.
+	RegisterEvent(AutomationWebService,VolumeRequest,OnVolumeRequest);
+	RegisterEvent(AutomationWebService,VolumeLevelRequest,OnVolumeLevelRequest);
+
+    // Register the lighting event handlers.               
+ 	RegisterEvent(AutomationWebService,LightsRequest,OnLightsRequest);
+ 	RegisterEvent(AutomationWebService,LightingSceneRequest,OnLightingSceneRequest);
+ 	RegisterEvent(AutomationWebService,LightingLevelRequest,OnLightingLevelRequest);
+
+     // Register the shade event handlers.               
+ 	RegisterEvent(AutomationWebService,ShadesRequest,OnShadesRequest);
+
+    // Register the source select event handler.
+	RegisterEvent(AutomationWebService,SourceRequest,OnSourceRequest);
+
+  	// Register the custom command select event handler.
+	RegisterEvent(AutomationWebService,CustomCommandRequest,OnCustomCommandRequest);
+
+    WaitForInitializationComplete();
+
+    // If StartServer has been jammed high, then start the server.
+	if(StartServer)
+		AutomationWebService.Start(Path);
+}
