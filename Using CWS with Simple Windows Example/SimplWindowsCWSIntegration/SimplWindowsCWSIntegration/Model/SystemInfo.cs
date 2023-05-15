@@ -4,6 +4,9 @@ using Newtonsoft.Json.Converters;
 
 namespace SimplWindowsCWSIntegration
 {
+    /// <summary>
+    /// Serialisable class encapsulating basic information about the system.
+    /// </summary>
     internal class SystemInfo
     {
         [JsonProperty("platform")]

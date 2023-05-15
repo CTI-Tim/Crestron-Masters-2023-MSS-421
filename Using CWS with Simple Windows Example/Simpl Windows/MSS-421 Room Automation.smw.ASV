@@ -677,21 +677,6 @@ Sy1=0
 Mx1=0
 ]
 [
-ObjTp=Bw
-H=1
-Lx=0
-Ly=0
-Rx=1169
-Ry=915
-Xm=-1
-Ym=-1
-SH=25
-Z=100
-P=568
-Ht=1
-Hi=1
-]
-[
 ObjTp=Et
 H=1
 DvH=508
@@ -801,9 +786,8 @@ SmVr=1186
 PrH=8
 CF=2
 Cmn1=System Status\\
-mC=2
-C1=26
-C2=45
+mC=1
+C1=45
 ]
 [
 ObjTp=Sm
@@ -1295,26 +1279,6 @@ GrpStO58=5
 ]
 [
 ObjTp=Sm
-H=26
-SmC=89
-Nm=Serial Send
-ObjVer=1
-SmVr=1186
-PrH=7
-CF=2
-n1I=1
-n1O=1
-Cmn1=System Status\\
-mI=1
-I1=2
-mO=1
-tO=1
-O1=10
-mP=1
-P1=The AV system is feeling emotional today and might cry during your presentation. Please prepare some tissues.
-]
-[
-ObjTp=Sm
 H=27
 SmC=156
 Nm=SUBSYSTEM
@@ -1708,7 +1672,7 @@ tO=1
 O1=13
 mP=2
 P1=1t
-P2=60s
+P2=30s
 ]
 [
 ObjTp=Sm
@@ -1853,7 +1817,7 @@ I26=127
 I27=128
 mO=2
 tO=2
-O1=31
+O1=10
 mP=27
 P1=
 P2=The AV system is feeling shy today and doesn't want to work. Please try again after giving it some compliments.
@@ -1987,6 +1951,13 @@ I17=107
 I18=108
 I19=109
 I20=110
+I21=122
+I22=123
+I23=124
+I24=125
+I25=126
+I26=127
+I27=128
 mO=2
 tO=2
 O1=31
@@ -2010,13 +1981,13 @@ P16=Error 666: Your meeting has been cursed by technical difficulties. Please pe
 P17=Error 90210: Your presentation is too dramatic. Please dial it down a notch.
 P18=Error 404: Your audience has fallen asleep. Please engage them with more jokes.
 P19=Error 404: Your technology has gone on vacation. Please try again after it returns.
-P20=
-P21=
-P22=
-P23=
-P24=
-P25=
-P26=
+P20=Error 404: The microphone is playing hide-and-seek. Please help us find it and try again.
+P21=Error 007: The projector is too shy to display anything. Please try to make it feel more comfortable.
+P22=Error 404: The camera is in witness protection. Please keep it safe and try again later.
+P23=Error 404: The meeting room is experiencing a case of the Mondays. Please wait until the weekend and try again.
+P24=Error 404: The sound system is on strike. Please negotiate a better contract and try again.
+P25=Error 404: The display screen is in camouflage mode. Please search carefully and try again.
+P26=Error 404: The speaker is singing a different tune. Please find the right playlist and try again.
 P27=
 ]
 [

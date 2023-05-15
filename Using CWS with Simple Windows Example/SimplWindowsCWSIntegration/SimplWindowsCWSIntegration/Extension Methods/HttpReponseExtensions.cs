@@ -1,6 +1,7 @@
 ﻿using Crestron.SimplSharp.WebScripting;
 using Newtonsoft.Json;
 using System.Net;
+using System.Runtime.Remoting.Contexts;
 
 namespace SimplWindowsCWSIntegration
 {
@@ -37,6 +38,16 @@ namespace SimplWindowsCWSIntegration
             response.StatusCode = (int)statusCode;
             response.ContentType = "application/json";
             response.Write(content, true);
+        }
+        /// <summary>
+        /// Writes a simple Error 404: Not found to the response.
+        /// </summary>
+        /// <param name="response">The active HttpCwsResponse to write to.</param>
+        public static void WriteNotFound(this HttpCwsResponse response)
+        {
+            response.StatusCode = (int)HttpStatusCode.NotFound;
+            response.ContentType = "text/plain";
+            response.Write("Error 404: Not Found", true);
         }
     }
 }

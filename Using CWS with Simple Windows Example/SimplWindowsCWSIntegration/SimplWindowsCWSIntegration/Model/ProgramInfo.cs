@@ -4,8 +4,12 @@ using Newtonsoft.Json.Converters;
 
 namespace SimplWindowsCWSIntegration
 {
+    /// <summary>
+    /// Serialisable class encapsulating basic information about the running program.
+    /// </summary>
     internal class ProgramInfo
-    {
+    {   
+
         [JsonProperty("compatability")]
         [JsonConverter(typeof(StringEnumConverter))]
         public eCrestronSeries Compatability

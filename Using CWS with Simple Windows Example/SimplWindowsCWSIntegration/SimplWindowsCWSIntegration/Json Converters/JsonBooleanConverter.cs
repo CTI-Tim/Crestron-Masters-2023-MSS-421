@@ -4,18 +4,27 @@ using System;
 
 namespace SimplWindowsCWSIntegration.Converters
 {
+    /// <summary>
+    /// Converts a boolean value to closed / open.
+    /// </summary>
     public class JsonShadesBooleanConverter : JsonBooleanConverter
     {
         public JsonShadesBooleanConverter()
                 : base("closed", "open") { }
     }
 
+    /// <summary>
+    /// Converts a boolean value to muted / unmuted.
+    /// </summary>
     public class JsonMuteBooleanConverter : JsonBooleanConverter
     {
         public JsonMuteBooleanConverter()
                 : base("muted", "unmuted") { }
     }
 
+    /// <summary>
+    /// Converts a boolean value to on / off
+    /// </summary>
     public class JsonOnOffBooleanConverter : JsonBooleanConverter
     {
         public JsonOnOffBooleanConverter()

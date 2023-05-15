@@ -175,6 +175,8 @@ namespace SimplWindowsCWSIntegration
         }
         #endregion
 
+        #region Public Simpl+ Methods
+
         /// <summary>
         /// Start the server.
         /// </summary>
@@ -233,12 +235,12 @@ namespace SimplWindowsCWSIntegration
                 {
                     VC4Debugger.Exception("CwsRoomAutomationExample - Start()", ex);
                     ErrorLog.Exception("CwsRoomAutomationExample - Start()", ex);
-                }              
+                }
             }
         }
 
         /// <summary>
-        /// Stop the CWS Server
+        /// Stop the CWS Server.
         /// </summary>
         public void Stop()
         {
@@ -246,11 +248,13 @@ namespace SimplWindowsCWSIntegration
             {
                 try
                 {
+                    // Check if a server exists).
                     if (cwsServer != null)
                     {
                         VC4Debugger.Debug("CWSRoomAutomation - Stop() - Stopping CWS HttpCwsServer");
-
+                        // Unregister the server.
                         var result = cwsServer.Unregister();
+                        // Dispose of the server.
                         cwsServer.Dispose();
                         cwsServer = null;
 
@@ -271,7 +275,6 @@ namespace SimplWindowsCWSIntegration
             }
         }
 
-        #region Public Simpl+ Methods
         /// <summary>
         /// Store the power state for reporting to the cws client. 
         /// </summary>
@@ -364,15 +367,35 @@ namespace SimplWindowsCWSIntegration
             // return the complete string.
             return build.ToString();
         }
-
         #endregion
 
-        #region Event Handling
+        #region Event Handling 
+        /// <summary>
+        /// Catch-all Received Request Event from the CWS Server.
+        /// We are not using this method in this example other than to print out information about each incoming request.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void HttpCwsServer_ReceivedRequestEvent(object sender, HttpCwsRequestEventArgs args)
         {
             try
             {
-                VC4Debugger.Debug("Received Message from Server: {0} {1}", args.Context.Timestamp, args.Context.Request.Path);
+                VC4Debugger.Debug("Received Message from Server: {0} {1}", args.Context.Timestamp, args.Context.Request.Url);
+                VC4Debugger.Debug("Path Info: {0}", args.Context.Request.PathInfo);
+                VC4Debugger.Debug("Http Method: {0}", args.Context.Request.HttpMethod);
+                VC4Debugger.Debug("Secure Connection: {0}", args.Context.Request.IsSecureConnection);
+                VC4Debugger.Debug("Content Type: {0}", args.Context.Request.ContentType);
+
+                // Another quick method of passing information into CWS is via QueryStrings.
+                foreach (var key in args.Context.Request.QueryString.Keys)
+                {
+                    VC4Debugger.Debug("Query Key: {0} Value: {1}", key, args.Context.Request.QueryString[(string)key]);
+                }
+
+                VC4Debugger.Debug("User Host Address: {0}", args.Context.Request.UserHostAddress);
+                VC4Debugger.Debug("User Hostname: {0}", args.Context.Request.UserHostName);
+                VC4Debugger.Debug("User Agent: {0}", args.Context.Request.UserAgent);
+                VC4Debugger.Debug("User Languages: {0}", string.Join(",", args.Context.Request.UserLanguages));
             }
             catch (Exception ex)
             {

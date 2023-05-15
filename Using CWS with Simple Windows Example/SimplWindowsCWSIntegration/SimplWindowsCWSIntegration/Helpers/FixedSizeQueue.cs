@@ -53,6 +53,9 @@ namespace SimplWindowsCWSIntegration
             }
         }
 
+        /// <summary>
+        /// Clears all items from the queue.
+        /// </summary>
         public void Clear()
         {
             lock (_lock)
