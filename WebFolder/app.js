@@ -16,17 +16,17 @@
 // Be very aware of this when writing portable code, you will need to write javascript to detect VC-4 (parse the http path) and adjust your REST
 // path accordingly to be correct for your web pages.
 
-const nameInput = document.getElementById('MastersClass');
-const locationInput = document.getElementById('IPAddress');
-const helpNumberInput = document.getElementById('Port');
-const UiPasswordInput = document.getElementById('password');
+let nameInput = document.getElementById('MastersClass');
+let locationInput = document.getElementById('IPAddress');
+let helpNumberInput = document.getElementById('Port');
+let UiPasswordInput = document.getElementById('password');
 
 
-const saveBtn = document.getElementById('save-changes');
+let saveBtn = document.getElementById('save-changes');
 saveBtn.addEventListener('click', (e) => {
     putSettings();
 });
-const reloadBtn = document.getElementById('reload');
+let reloadBtn = document.getElementById('reload');
 reloadBtn.addEventListener('click', (e) => {
     location.reload();
 });
